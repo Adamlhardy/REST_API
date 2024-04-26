@@ -18,7 +18,7 @@ import com.example.demo.Services.ItemService;
 
 @RestController
 @RequestMapping("/api/items")
-public class ItemCotroller {
+public class ItemController {
     
     @Autowired
     ItemService itemService;
