@@ -2,7 +2,10 @@ package com.example.demo.Controllers;
 
 import java.util.List;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+
 import com.example.demo.Models.*;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +23,14 @@ public class RestaurantController {
     RestaurantRepository restaurantRepository;
 
     @GetMapping("/{borough}")
-    public List<Restaurant> getRestaurantByBorough(@PathVariable(value = "borough") String boroughName) {
-       var result = restaurantRepository.findRestaurantByBorough(boroughName);
-       return result;
+    public ResponseEntity<List<Restaurant>> getRestaurantByBorough(@PathVariable(value = "borough") String boroughName) {
+       
+        List<Restaurant>result = restaurantRepository.findRestaurantByBorough(boroughName);
+       
+        if(result != null) {
+        return ResponseEntity.ok(result);
+       } else {
+        return ResponseEntity.notFound().build();
+       }
     }
 }
