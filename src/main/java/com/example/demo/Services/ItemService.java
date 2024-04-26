@@ -1,6 +1,7 @@
 package com.example.demo.Services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,16 +16,19 @@ public class ItemService {
     ItemRepository itemRepository;
 
     public Item AddItem(Item item) {
-        var existingItem = itemRepository.findById(item.id).get();
+        Optional<Item> existingItem = itemRepository.findById(item.id);
 
-        if(existingItem == null) {
+        try{
+            if(existingItem.get() == null) {
+                itemRepository.insert(item);
+                return itemRepository.save(item);
+            } else {
+                existingItem.get().quantity += item.quantity;
+                return itemRepository.save(existingItem.get());
+            }
+        } catch(Exception ex) {
             itemRepository.insert(item);
-            itemRepository.save(item);
             return itemRepository.save(item);
-        } else {
-            existingItem.quantity += item.quantity;
-            itemRepository.save(existingItem);
-            return itemRepository.save(existingItem);
         }
     }
 
